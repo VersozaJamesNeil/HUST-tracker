@@ -212,7 +212,7 @@
             tbody.innerHTML += `<tr>
                 <td>${e.type}</td><td>${e.val}</td><td>${e.date}</td>
                 <td><span class="badge ${e.status.toLowerCase()}">${e.status}</span></td>
-                <td><button class="del-btn" onclick="deleteEntry(${e.id})">🗑️</button></td>
+                <td><button class="del-btn" onclick="deleteEntry(${e.id})">Delete</button></td>
             </tr>`;
         });
         updateChart();
