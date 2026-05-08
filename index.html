@@ -10,17 +10,17 @@
         body { font-family: 'Segoe UI', sans-serif; background-color: var(--black); margin: 0; }
         .hidden { display: none !important; }
         
-        /* Auth Styles */
+        
         .auth-container { height: 100vh; display: flex; justify-content: center; align-items: center; flex-direction: column; }
         .auth-card { background: white; padding: 40px; border-radius: 12px; width: 350px; border-top: 5px solid var(--gold); box-shadow: 0 10px 25px rgba(0,0,0,0.5); text-align: center; }
         .slogan { color: var(--gold); font-size: 0.9em; font-style: italic; margin-top: -15px; margin-bottom: 20px; font-weight: bold; }
         
-        /* Dashboard Header */
+       
         header { background: var(--black); color: var(--gold); padding: 15px 40px; display: flex; justify-content: space-between; align-items: center; border-bottom: 3px solid var(--gold); }
         .brand-section { display: flex; align-items: center; gap: 10px; font-weight: bold; letter-spacing: 1px; }
         .user-tag { color: white; background: rgba(212, 175, 55, 0.2); padding: 2px 8px; border-radius: 4px; font-size: 0.9em; }
 
-        /* Layout */
+        
         .main-container { display: grid; grid-template-columns: 350px 1fr; gap: 25px; padding: 25px; max-width: 1400px; margin: auto; }
         .card { background: white; border-radius: 12px; padding: 20px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); margin-bottom: 20px; }
         
@@ -45,7 +45,7 @@
 </head>
 <body>
 
-<!-- LOGIN PAGE -->
+
 <div id="authPage" class="auth-container">
     <div class="auth-card">
         <h1 style="margin-bottom: 10px; color: var(--black);">H.U.S.T.</h1>
@@ -56,7 +56,7 @@
     </div>
 </div>
 
-<!-- DASHBOARD PAGE -->
+
 <div id="dashboardPage" class="hidden" style="background-color: var(--bg); min-height: 100vh;">
     <header>
         <div class="brand-section">
@@ -80,7 +80,7 @@
                 <button class="btn-gold" onclick="addEntry()">ANALYZE & SAVE</button>
             </div>
 
-            <!-- Analysis Displays -->
+            
             <div class="advice-box elec">
                 <h4 style="margin:0; color: var(--gold);"> Electricity Analysis</h4>
                 <div id="elecStatus">Waiting for data...</div>
@@ -102,7 +102,7 @@
 
         <div class="content">
             <div class="card">
-                <h3 style="margin-top:0">Visual Usage Chart</h3>
+                <h3 style="margin-top:0">Comsumption Usage Chart</h3>
                 <div style="height: 250px;"><canvas id="hustChart"></canvas></div>
             </div>
             
