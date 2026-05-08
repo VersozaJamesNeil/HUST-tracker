@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>H.U.S.T. | Home Utility Smart Tracker</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        :root { --gold: #D4AF37; --black: #1a1a1a; --bg: #f4f4f9; --red: #e74c3c; --green: #27ae60; --blue: #3498db; }
+        body { font-family: 'Segoe UI', sans-serif; background-color: var(--black); margin: 0; }
+        .hidden { display: none !important; }
+        
+        /* Auth Styles */
+        .auth-container { height: 100vh; display: flex; justify-content: center; align-items: center; flex-direction: column; }
+        .auth-card { background: white; padding: 40px; border-radius: 12px; width: 350px; border-top: 5px solid var(--gold); box-shadow: 0 10px 25px rgba(0,0,0,0.5); text-align: center; }
+        .slogan { color: var(--gold); font-size: 0.9em; font-style: italic; margin-top: -15px; margin-bottom: 20px; font-weight: bold; }
+        
+        /* Dashboard Header */
+        header { background: var(--black); color: var(--gold); padding: 15px 40px; display: flex; justify-content: space-between; align-items: center; border-bottom: 3px solid var(--gold); }
+        .brand-section { display: flex; align-items: center; gap: 10px; font-weight: bold; letter-spacing: 1px; }
+        .user-tag { color: white; background: rgba(212, 175, 55, 0.2); padding: 2px 8px; border-radius: 4px; font-size: 0.9em; }
+
+        /* Layout */
+        .main-container { display: grid; grid-template-columns: 350px 1fr; gap: 25px; padding: 25px; max-width: 1400px; margin: auto; }
+        .card { background: white; border-radius: 12px; padding: 20px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); margin-bottom: 20px; }
+        
+        .sidebar-section { display: flex; flex-direction: column; gap: 10px; }
+        .advice-box { padding: 15px; border-radius: 10px; border-left: 5px solid #ccc; background: #fffdf0; font-size: 0.85em; }
+        .advice-box.elec { border-color: var(--gold); }
+        .advice-box.water { border-color: var(--blue); }
+        .advice-box.lpg { border-color: var(--red); }
+        
+        input, select { width: 100%; padding: 12px; margin: 8px 0; border: 1px solid #ddd; border-radius: 8px; box-sizing: border-box; }
+        .btn-gold { width: 100%; background: var(--black); color: var(--gold); border: 1px solid var(--gold); padding: 12px; border-radius: 8px; cursor: pointer; font-weight: bold; }
+        
+        table { width: 100%; border-collapse: collapse; margin-top: 10px; }
+        th { text-align: left; padding: 10px; background: #eee; font-size: 0.8em; }
+        td { padding: 10px; border-bottom: 1px solid #eee; font-size: 0.9em; }
+        
+        .badge { padding: 2px 6px; border-radius: 4px; font-size: 0.75em; color: white; font-weight: bold; }
+        .high { background: var(--red); }
+        .low { background: var(--green); }
+        .del-btn { background: var(--red); color: white; border: none; padding: 5px 8px; border-radius: 4px; cursor: pointer; font-size: 0.8em; }
+    </style>
+</head>
+<body>
+
+<!-- LOGIN PAGE -->
+<div id="authPage" class="auth-container">
+    <div class="auth-card">
+        <h1 style="margin-bottom: 10px; color: var(--black);">H.U.S.T.</h1>
+        <div class="slogan">"Track Smart, Save More"</div>
+        <input type="email" id="email" placeholder="Email Address">
+        <input type="password" id="pass" placeholder="Password">
+        <button class="btn-gold" onclick="handleAuth()">Enter Dashboard</button>
+    </div>
+</div>
+
+<!-- DASHBOARD PAGE -->
+<div id="dashboardPage" class="hidden" style="background-color: var(--bg); min-height: 100vh;">
+    <header>
+        <div class="brand-section">
+            <span>H.U.S.T.</span>
+            <span class="user-tag" id="displayUser">User</span>
+        </div>
+        <button onclick="logout()" style="background:none; border:1px solid var(--gold); color:var(--gold); cursor:pointer; padding:5px 15px; border-radius: 4px;">Logout</button>
+    </header>
+
+    <div class="main-container">
+        <div class="sidebar-section">
+            <div class="card">
+                <h3 style="margin-top:0">Input Data</h3>
+                <select id="uType">
+                    <option value="Electricity">Electricity (kWh)</option>
+                    <option value="Water">Water (m³)</option>
+                    <option value="LPG">LPG (kg)</option>
+                </select>
+                <input type="number" id="uVal" placeholder="Reading Value">
+                <input type="date" id="uDate">
+                <button class="btn-gold" onclick="addEntry()">ANALYZE & SAVE</button>
+            </div>
+
+            <!-- Analysis Displays -->
+            <div class="advice-box elec">
+                <h4 style="margin:0; color: var(--gold);">⚡ Electricity Analysis</h4>
+                <div id="elecStatus">Waiting for data...</div>
+                <div id="elecAdvice" style="margin-top:5px; color: #666; font-style: italic;"></div>
+            </div>
+
+            <div class="advice-box water">
+                <h4 style="margin:0; color: var(--blue);">💧 Water Analysis</h4>
+                <div id="waterStatus">Waiting for data...</div>
+                <div id="waterAdvice" style="margin-top:5px; color: #666; font-style: italic;"></div>
+            </div>
+
+            <div class="advice-box lpg">
+                <h4 style="margin:0; color: var(--red);">🔥 LPG Lifespan</h4>
+                <div id="lpgStatus">Waiting for data...</div>
+                <div id="lpgAdvice" style="margin-top:5px; font-weight:bold; color: var(--red);"></div>
+            </div>
+        </div>
+
+        <div class="content">
+            <div class="card">
+                <h3 style="margin-top:0">Visual Usage Chart</h3>
+                <div style="height: 250px;"><canvas id="hustChart"></canvas></div>
+            </div>
+            
+            <div class="card">
+                <h3>Log History</h3>
+                <table>
+                    <thead>
+                        <tr><th>Type</th><th>Value</th><th>Date</th><th>Status</th><th>Action</th></tr>
+                    </thead>
+                    <tbody id="historyBody"></tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    let currentSession = null;
+    let entries = [];
+    let chart;
+
+    function handleAuth() {
+        const email = document.getElementById('email').value;
+        const pass = document.getElementById('pass').value;
+        if (!email || !pass) return alert("Please login");
+
+        currentSession = email;
+        document.getElementById('displayUser').innerText = email.split('@')[0].toUpperCase();
+        
+        const savedData = localStorage.getItem('hust_data_' + email);
+        entries = savedData ? JSON.parse(savedData) : [];
+
+        document.getElementById('authPage').classList.add('hidden');
+        document.getElementById('dashboardPage').classList.remove('hidden');
+        initChart();
+        updateUI();
+    }
+
+    function logout() { location.reload(); }
+
+    function initChart() {
+        const ctx = document.getElementById('hustChart').getContext('2d');
+        chart = new Chart(ctx, {
+            type: 'line',
+            data: { labels: [], datasets: [
+                { label: 'Electricity', data: [], borderColor: '#D4AF37', tension: 0.3 },
+                { label: 'Water', data: [], borderColor: '#3498db', tension: 0.3 }
+            ]},
+            options: { responsive: true, maintainAspectRatio: false }
+        });
+    }
+
+    function addEntry() {
+        const type = document.getElementById('uType').value;
+        const val = parseFloat(document.getElementById('uVal').value);
+        const date = document.getElementById('uDate').value;
+        if (!val || !date) return alert("Please fill all fields");
+
+        const historyOfType = entries.filter(e => e.type === type);
+        let status = "First";
+        if (historyOfType.length > 0) {
+            const avg = historyOfType.reduce((sum, e) => sum + e.val, 0) / historyOfType.length;
+            status = val > avg ? "High" : "Low";
+        }
+
+        entries.push({ id: Date.now(), type, val, date, status });
+        saveData();
+        updateUI();
+    }
+
+    function deleteEntry(id) {
+        entries = entries.filter(e => e.id !== id);
+        saveData();
+        updateUI();
+    }
+
+    function saveData() {
+        localStorage.setItem('hust_data_' + currentSession, JSON.stringify(entries));
+    }
+
+    function updateUI() {
+        const tbody = document.getElementById('historyBody');
+        tbody.innerHTML = '';
+        entries.sort((a,b) => new Date(b.date) - new Date(a.date));
+
+        let latestElec = entries.find(e => e.type === "Electricity");
+        let latestWater = entries.find(e => e.type === "Water");
+        let latestLPG = entries.find(e => e.type === "LPG");
+
+        if(latestElec) {
+            document.getElementById('elecStatus').innerHTML = `Current: <b>${latestElec.val} kWh</b> <span class="badge ${latestElec.status.toLowerCase()}">${latestElec.status}</span>`;
+            document.getElementById('elecAdvice').innerText = latestElec.status === "High" ? "Advice: Usage is above your average. Check for high-wattage appliances." : "Advice: Excellent! Your energy usage is below your average.";
+        }
+        
+        if(latestWater) {
+            document.getElementById('waterStatus').innerHTML = `Current: <b>${latestWater.val} m³</b> <span class="badge ${latestWater.status.toLowerCase()}">${latestWater.status}</span>`;
+            document.getElementById('waterAdvice').innerText = latestWater.status === "High" ? "Advice: Consumption is high. Check faucets for minor leaks." : "Advice: Great water conservation habits!";
+        }
+
+        if(latestLPG) {
+            const exp = new Date(latestLPG.date); exp.setDate(exp.getDate() + 30);
+            document.getElementById('lpgStatus').innerHTML = `Last Tank: ${latestLPG.val}kg`;
+            document.getElementById('lpgAdvice').innerHTML = `Estimated Refill Date:<br>${exp.toDateString()}`;
+        }
+
+        entries.forEach(e => {
+            tbody.innerHTML += `<tr>
+                <td>${e.type}</td><td>${e.val}</td><td>${e.date}</td>
+                <td><span class="badge ${e.status.toLowerCase()}">${e.status}</span></td>
+                <td><button class="del-btn" onclick="deleteEntry(${e.id})">Delete</button></td>
+            </tr>`;
+        });
+        updateChart();
+    }
+
+    function updateChart() {
+        const sorted = [...entries].sort((a,b) => new Date(a.date) - new Date(b.date));
+        chart.data.labels = [...new Set(sorted.map(e => e.date))];
+        chart.data.datasets[0].data = sorted.filter(e => e.type === 'Electricity').map(e => ({x: e.date, y: e.val}));
+        chart.data.datasets[1].data = sorted.filter(e => e.type === 'Water').map(e => ({x: e.date, y: e.val}));
+        chart.update();
+    }
+</script>
+</body>
+</html>
