@@ -41,6 +41,36 @@
         .high { background: var(--red); }
         .low { background: var(--green); }
         .del-btn { background: var(--red); color: white; border: none; padding: 5px 8px; border-radius: 4px; cursor: pointer; font-size: 0.8em; }
+        @media (max-width: 768px) {
+    html, body {
+        overflow-x: hidden;
+        width: 100%;
+    }
+    .main-container {
+        grid-template-columns: 1fr !important; 
+        padding: 10px !important;
+        margin: 0 !important;
+        width: 100%;
+        box-sizing: border-box; 
+    }
+    .card, .sidebar-section, .advice-box {
+        width: 100% !important;
+        max-width: 100% !important;
+        margin-left: 0 !important;
+        margin-right: 0 !important;
+        box-sizing: border-box;
+    }
+    header {
+        flex-direction: column;
+        height: auto !important;
+        padding: 15px 10px !important;
+    }
+    table, canvas {
+        width: 100% !important;
+        display: block;
+        overflow-x: auto;
+    }
+}
     </style>
 </head>
 <body>
